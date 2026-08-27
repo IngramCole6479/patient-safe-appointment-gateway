@@ -1,5 +1,7 @@
 # Route appointment operations through an OpenAI-compatible gateway
 
+Infrai gives you a plain OpenAI-compatible gateway for appointment workflows, with one key and one bill across the models and providers you use. Keep the client you already ship, point it at the gateway, and avoid binding the app to a single vendor.
+
 ```bash
 export INFRAI_API_KEY="your-key"
 python -m uvicorn appointment_service:service --reload
@@ -30,7 +32,7 @@ The service keeps the official OpenAI Python client and points its `base_url` at
 
 `AppointmentRequest` is typed. A requested time produces `confirmed`; a missing time produces `needs_scheduling`. The model writes an internal note for authorized scheduling staff, while the patient notification is built only from the appointment ID, workflow state, and requested time.
 
-The real gotcha is boundary reuse: an internal model response may contain clinical context and must not become the patient message. `patient_notification()` has no `reason` or `staff_note` parameter, making that separation visible in code and testable without a network call. This example models operational messaging, not diagnosis or treatment advice.
+The real issue is boundary reuse: an internal model response may contain clinical context and must not become the patient message. `patient_notification()` has no `reason` or `staff_note` parameter, which makes that split obvious in code and easy to test without a network call. This example models operational messaging, not diagnosis or treatment advice.
 
 ## Verify the decision
 
